@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Text to Google Calendar</title>
+  <title>Text to Google Calendar — AI-powered event creation</title>
+  <meta name="description" content="A Chrome extension that turns any selected text into a Google Calendar event using AI. Open source and self-hostable.">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -15,36 +16,103 @@
     .header {
       background: linear-gradient(135deg, #4285f4, #34a853);
       color: white;
-      padding: 60px 20px;
+      padding: 80px 20px 60px;
       text-align: center;
     }
-    .header h1 { font-size: 36px; margin-bottom: 12px; }
-    .header p { font-size: 18px; opacity: 0.95; max-width: 600px; margin: 0 auto; }
+    .header h1 { font-size: 42px; margin-bottom: 14px; font-weight: 700; }
+    .header p { font-size: 18px; opacity: 0.95; max-width: 640px; margin: 0 auto 28px; }
+    .badges { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .badge:hover { background: rgba(255,255,255,0.3); }
     .container {
-      max-width: 800px;
+      max-width: 880px;
       margin: 0 auto;
-      padding: 40px 20px;
+      padding: 50px 20px;
     }
     .section {
       background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      padding: 32px;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
       margin-bottom: 24px;
     }
     .section h2 {
       color: #4285f4;
-      margin-bottom: 16px;
-      font-size: 24px;
+      margin-bottom: 18px;
+      font-size: 26px;
     }
-    .section p { margin-bottom: 12px; }
-    .section ul { margin-left: 20px; margin-bottom: 12px; }
-    .section li { margin-bottom: 6px; }
+    .section p { margin-bottom: 14px; }
+    .section ul { margin-left: 22px; margin-bottom: 14px; }
+    .section li { margin-bottom: 8px; }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .feature {
+      padding: 18px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 3px solid #4285f4;
+    }
+    .feature .icon { font-size: 22px; margin-bottom: 6px; }
+    .feature h3 { font-size: 15px; margin-bottom: 6px; color: #333; }
+    .feature p { font-size: 13px; color: #666; margin: 0; }
+    pre {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    code { font-family: 'SF Mono', Monaco, Consolas, monospace; }
+    p code, li code {
+      background: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.92em;
+    }
+    .cta {
+      text-align: center;
+      padding: 30px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      margin: 6px;
+      background: #4285f4;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: #3367d6; }
+    .btn-outline {
+      background: white;
+      color: #4285f4;
+      border: 2px solid #4285f4;
+    }
+    .btn-outline:hover { background: #e8f0fe; }
     .footer {
       text-align: center;
       padding: 30px 20px;
       color: #666;
       font-size: 14px;
+      border-top: 1px solid #e0e0e0;
+      background: white;
     }
     .footer a { color: #4285f4; text-decoration: none; margin: 0 10px; }
     .footer a:hover { text-decoration: underline; }
@@ -53,37 +121,114 @@
 <body>
   <div class="header">
     <h1>Text to Google Calendar</h1>
-    <p>Turn any text into a Google Calendar event with AI. Select text on any webpage and instantly create perfectly formatted calendar events.</p>
+    <p>Select text on any webpage. Right-click. Get a perfectly formatted Google Calendar event in seconds — powered by AI.</p>
+    <div class="badges">
+      <a href="https://github.com/qinanh/text-to-google-calendar" class="badge" target="_blank">⭐ View on GitHub</a>
+      <a href="https://github.com/qinanh/text-to-google-calendar#quick-start-self-hosted" class="badge" target="_blank">📦 Self-host guide</a>
+      <a href="privacy.html" class="badge">🔒 Privacy</a>
+    </div>
   </div>
 
   <div class="container">
     <div class="section">
       <h2>What it does</h2>
-      <p>Text to Google Calendar is a Chrome extension that uses AI to extract event details from any text you select and create them as Google Calendar events. No more manual data entry.</p>
-    </div>
-
-    <div class="section">
-      <h2>Features</h2>
+      <p>Tired of manually copying meeting details into your calendar? <strong>Text to Google Calendar</strong> uses AI to extract event information from any text you select on a webpage and creates the event in your Google Calendar with one click.</p>
+      <p>Examples it handles:</p>
       <ul>
-        <li>Right-click any selected text to instantly create calendar events</li>
-        <li>AI-powered parsing of dates, times, locations, and attendees</li>
-        <li>Supports multiple events from a single block of text</li>
-        <li>Preview events before creating them</li>
-        <li>Recurring events, reminders, Google Meet links, and more</li>
+        <li>"Lunch with Alice next Friday at noon at The Cheesecake Factory"</li>
+        <li>"Team standup every weekday at 9:30am for 15 minutes starting Monday"</li>
+        <li>Multiple events extracted from a single email or schedule block</li>
       </ul>
     </div>
 
     <div class="section">
-      <h2>Privacy</h2>
-      <p>Your privacy matters. The extension only accesses your Google Calendar when you explicitly trigger an action. Authentication is handled directly in your browser, and your Google credentials are never sent to or stored on our servers.</p>
-      <p>See our <a href="privacy.html" style="color:#4285f4;">Privacy Policy</a> for details.</p>
+      <h2>Features</h2>
+      <div class="features">
+        <div class="feature">
+          <div class="icon">🖱️</div>
+          <h3>Right-click magic</h3>
+          <p>Select any text, right-click, choose "Create Calendar Event" — done.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">🤖</div>
+          <h3>AI-powered parsing</h3>
+          <p>Extracts titles, dates, times, locations, attendees, and recurrence rules.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">📅</div>
+          <h3>Multi-event</h3>
+          <p>Pull several events out of a single block of text in one shot.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">🔐</div>
+          <h3>Multi-user by design</h3>
+          <p>Each user signs in with their own Google account. The backend never sees credentials.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">🎨</div>
+          <h3>Rich event support</h3>
+          <p>Colors, reminders, Google Meet links, recurrence, and visibility settings.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">⚡</div>
+          <h3>Self-hostable</h3>
+          <p>Bring your own LLM provider — OpenAI, Qwen, or any OpenAI-compatible API.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>How it works</h2>
+      <ol style="margin-left: 22px;">
+        <li>Install the Chrome extension</li>
+        <li>Click <strong>Login with Google</strong> in the popup — you're authenticating directly with Google, not us</li>
+        <li>Select text on any webpage</li>
+        <li>Right-click → <strong>Create Calendar Event</strong></li>
+        <li>Done — the event is on your calendar</li>
+      </ol>
+      <p style="margin-top: 14px;">Behind the scenes: the extension sends your selected text plus your Google access token to a lightweight Flask backend, which parses the text via an LLM and creates the event using <em>your</em> token. No credentials are ever stored on the server.</p>
+    </div>
+
+    <div class="section">
+      <h2>Self-host it</h2>
+      <p>The whole stack is open source. To run your own backend:</p>
+      <pre><code>git clone https://github.com/qinanh/text-to-google-calendar.git
+cd text-to-google-calendar
+
+python3 -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+
+cp .env.example .env
+# Set OPENAI_API_KEY (or any OpenAI-compatible provider)
+
+python main.py</code></pre>
+      <p>Full instructions, including Google OAuth client setup and Docker / Cloud Run deployment, are in the <a href="https://github.com/qinanh/text-to-google-calendar#quick-start-self-hosted" target="_blank" style="color:#4285f4;">README</a>.</p>
+    </div>
+
+    <div class="section">
+      <h2>Privacy first</h2>
+      <p>We take privacy seriously:</p>
+      <ul>
+        <li><strong>No credential storage.</strong> Your Google OAuth token lives only in your browser's local storage.</li>
+        <li><strong>No data retention.</strong> Selected text is sent to the LLM for parsing and immediately discarded.</li>
+        <li><strong>No tracking, no analytics, no ads.</strong></li>
+        <li><strong>Open source.</strong> Audit every line of code on <a href="https://github.com/qinanh/text-to-google-calendar" target="_blank" style="color:#4285f4;">GitHub</a>.</li>
+      </ul>
+      <p>See the full <a href="privacy.html" style="color:#4285f4;">Privacy Policy</a> and <a href="terms.html" style="color:#4285f4;">Terms of Service</a>.</p>
+    </div>
+
+    <div class="cta">
+      <a href="https://github.com/qinanh/text-to-google-calendar" class="btn" target="_blank">View on GitHub</a>
+      <a href="https://github.com/qinanh/text-to-google-calendar#quick-start-self-hosted" class="btn btn-outline" target="_blank">Self-host guide</a>
     </div>
   </div>
 
   <div class="footer">
     <a href="index.html">Home</a> ·
+    <a href="https://github.com/qinanh/text-to-google-calendar" target="_blank">GitHub</a> ·
     <a href="privacy.html">Privacy Policy</a> ·
     <a href="terms.html">Terms of Service</a>
+    <p style="margin-top: 12px; color: #999;">© 2026 Text to Google Calendar · MIT License</p>
   </div>
 </body>
 </html>
